@@ -1,0 +1,25 @@
+{
+  "name": "nodeproject",
+  "version": "1.0.0",
+  "description": "nodejs helloworld",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flydog98/nodeproject.git"
+  },
+  "keywords": [
+    "node.js"
+  ],
+  "author": "flydog98",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/flydog98/nodeproject/issues"
+  },
+  "homepage": "https://github.com/flydog98/nodeproject#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
