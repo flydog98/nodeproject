@@ -154,3 +154,6 @@ package-lock.json
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+# test files
+test.js
