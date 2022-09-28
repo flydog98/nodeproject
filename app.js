@@ -169,4 +169,8 @@ app.delete("/api/user/delete", (req, res) => {
 });
 
 // http listen port 생성 서버 실행
-app.listen(3000, () => console.log("서버 가동"));
+const server = app.listen(3000, () => {
+  var host = server.address().address;
+  var port = server.address().port;
+  console.log("Express Server Listening at http://%s.%s", host, port);
+});
