@@ -157,3 +157,6 @@ package-lock.json
 
 # test files
 test.js
+
+# secret files
+awsconfig.json
