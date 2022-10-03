@@ -1,33 +1,60 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const path = require("path");
 const multer = require("multer");
-const multerS3 = require('multer-s3');
+const multerS3 = require("multer-s3");
 const AWS = require("aws-sdk");
-AWS.config.loadFromPath(__dirname + "/../config/awsconfig.json");
+const fs = require("fs");
+const { render } = require("ejs");
+const awsconfig = require("../config/awsconfig.json");
 
-let s3 = new AWS.S3();
+const bucket_name = "official-dataportal";
 
-let upload = multer({
-  storage: multerS3({
-    s3: s3,
-    bucket: "official-dataportal",
-    key: function (req, file, cb) {
-      let extension = path.extname(file.originalname);
-      cb(null, Date.now().toString() + extension)
-    },
-    acl: 'public-read-write',
-  })
-})
+const object_name = "sample-object";
+const object_folder_name = "sample-folder/";
+const local_file_path = "./test.txt";
 
+const access_key = awsconfig.accesskeyId;
+const secret_key = awsconfig.secretAccessKey;
 
-router.post('/', upload.single("imgFile"), function(req, res, next){
-  let imgFile = req.file;
-  res.json(imgFile);
-})
+const s3 = new AWS.S3({
+  region: "ap-northeast-2",
+  credentials: {
+    accessKeyId: access_key,
+    secretAccessKey: secret_key,
+  },
+});
 
-router.get('/', function(req, res, next) {
-  res.render('upload');
+router.post("/", async function (req, res, next) {
+  // create folder
+  await s3
+    .putObject({
+      Bucket: bucket_name,
+      Key: object_folder_name,
+    })
+    .promise();
+
+  // upload file
+  await s3
+    .putObject({
+      Bucket: bucket_name,
+      Key: object_name,
+      ACL: "public-read",
+      // ACL을 지우면 전체 공개되지 않습니다.
+      Body: fs.createReadStream(local_file_path),
+    })
+    .promise();
+
+  res.render("upload");
+});
+
+router.get("/", async function (req, res, next) {
+  let { Buckets } = await s3.listBuckets().promise();
+
+  for (let bucket of Buckets) {
+    console.log(bucket.Name);
+  }
+  res.render("upload");
 });
 
 module.exports = router;
